@@ -1,14 +1,12 @@
-import Ember from 'ember';
 import ChangesetHistory from 'ember-changeset-history';
 import { validatePresence, validateLength } from 'ember-changeset-validations/validators';
 import lookupValidator from 'ember-changeset-validations';
 import { module, test } from 'qunit';
 
-const {
-  get,
-  Object: EmberObject,
-  RSVP: {resolve}
-} = Ember;
+import EmberObject from '@ember/object';
+
+import { get } from '@ember/object';
+import { resolve } from 'rsvp';
 
 let dummyModel;
 let changeset;

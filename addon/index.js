@@ -1,12 +1,6 @@
 import { changeset } from 'ember-changeset';
 import deepEqual from 'ember-changeset-history/utils/deep-equals';
-import Ember from 'ember';
-
-const {
-  set,
-  get,
-  computed
-} = Ember;
+import { set, get, computed } from '@ember/object'
 
 const {
   keys,
