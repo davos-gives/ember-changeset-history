@@ -26,6 +26,10 @@ export default class Changeset {
 }
 
 export function changesetHistory(obj, validateFn = () => true, validationMap = {}, {maxHistoryLength=0} = {}) {
+
+  validateFn;
+  validationMap;
+
   let changesetClass = changeset(...arguments);
 
   return changesetClass.extend({
@@ -66,8 +70,8 @@ export function changesetHistory(obj, validateFn = () => true, validationMap = {
 
       const currentState = assign({}, this.snapshot());
       const newState = get(this, 'lastState');
-
       const pastStates = this[PAST];
+
       set(this, PAST, pastStates.slice(0, pastStates.length - 1));
       set(this, FUTURE, [currentState, ...this[FUTURE]]);
 
@@ -139,6 +143,7 @@ export function changesetHistory(obj, validateFn = () => true, validationMap = {
     _setCurrentState: function (newState) {
       set(this, CHANGES, assign({}, newState.changes));
       set(this, ERRORS, assign({}, newState.errors));
+      debugger;
     },
 
     _notifyChangedVirtualProperties(originalState, newState) {
