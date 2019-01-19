@@ -1,6 +1,8 @@
 import { changeset } from 'ember-changeset';
+import Change from 'ember-changeset/-private/change';
 import deepEqual from 'ember-changeset-history/utils/deep-equals';
-import { set, get, computed } from '@ember/object'
+
+import { set, get, computed } from '@ember/object';
 
 const {
   keys,
@@ -45,8 +47,11 @@ export function changesetHistory(obj, validateFn = () => true, validationMap = {
     }),
 
     _setProperty() {
+
       const originalState = assign({}, this.snapshot());
+
       this._super(...arguments);
+
 
       if (deepEqual(this.snapshot(), originalState)) {
         return;
@@ -56,6 +61,8 @@ export function changesetHistory(obj, validateFn = () => true, validationMap = {
       if (maxHistoryLength) {
         newPast.splice(0, newPast.length - maxHistoryLength);
       }
+
+
       set(this, PAST, newPast);
       set(this, FUTURE, []);
     },
@@ -67,13 +74,13 @@ export function changesetHistory(obj, validateFn = () => true, validationMap = {
       if(!this.get('canUndo')) {
         return;
       }
-
       const currentState = assign({}, this.snapshot());
       const newState = get(this, 'lastState');
       const pastStates = this[PAST];
 
       set(this, PAST, pastStates.slice(0, pastStates.length - 1));
       set(this, FUTURE, [currentState, ...this[FUTURE]]);
+
 
       this._setCurrentState(newState);
       this._notifyChangedVirtualProperties(currentState, newState);
@@ -131,7 +138,6 @@ export function changesetHistory(obj, validateFn = () => true, validationMap = {
       const historicalState = {};
       historicalState[PAST] = this[PAST];
       historicalState[FUTURE] = this[FUTURE];
-
       return assign(this._super(...arguments), historicalState);
     },
 
@@ -141,9 +147,16 @@ export function changesetHistory(obj, validateFn = () => true, validationMap = {
     },
 
     _setCurrentState: function (newState) {
-      set(this, CHANGES, assign({}, newState.changes));
+      let changes = newState.changes
+
+      let newChanges = keys(changes).reduce((newObj, key) => {
+        newObj[key] = new Change(changes[key]);
+        return newObj;
+      }, {});
+
+      set(this, CHANGES, assign({}, newChanges));
       set(this, ERRORS, assign({}, newState.errors));
-      debugger;
+
     },
 
     _notifyChangedVirtualProperties(originalState, newState) {
