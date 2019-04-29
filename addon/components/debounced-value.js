@@ -17,7 +17,8 @@ export default Component.extend({
     let actionToPerform = this.get('onChange');
 
     if (actionToPerform) {
-      actionToPerform(this.get('propertyPath'), newValue)
+      actionToPerform()
+      this.set('property', newValue);
     } else {
       this.set('property', newValue);
     }
